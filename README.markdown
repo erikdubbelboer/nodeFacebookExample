@@ -17,7 +17,6 @@ Usage
 
 Don't forget to replace the following strings:
 
-* YOUR APP SECTRET HERE
+* YOUR APP SECRET HERE
 * YOUR APPLICATION ID HERE
 * SOME RANDOM KEY HERE
-
