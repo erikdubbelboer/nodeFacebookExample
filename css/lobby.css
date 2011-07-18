@@ -1,0 +1,12 @@
+
+#users div {
+margin: 0.5em;
+width: 16em;
+background-color: #eee;
+cursor: pointer;
+}
+
+.info {
+color: #888;
+}
+
