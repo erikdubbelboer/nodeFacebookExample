@@ -1,4 +1,3 @@
-
 var http        = require('http'),
     fs          = require('fs'),
     querystring = require('querystring'),
@@ -87,7 +86,7 @@ var server = http.createServer(function(req, res) {
     }
 
     // Make sure the data posted is valid and comes from facebook.
-    var signature = crypto.createHmac('sha256', 'YOUR APP SECTRET HERE').update(data[1]).digest('base64').replace(/\+/g, '-').replace(/\//g, '_').replace('=', '');
+    var signature = crypto.createHmac('sha256', 'YOUR APP SECRET HERE').update(data[1]).digest('base64').replace(/\+/g, '-').replace(/\//g, '_').replace('=', '');
 
     if (data[0] != signature) {
       res.end('Error: Bad signature');
