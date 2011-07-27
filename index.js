@@ -112,8 +112,10 @@ var server = http.createServer(function(req, res) {
         // We are going to write the facebook token for this user to the page so it can be passed to our lobby server.
         // Since it is possible to run our lobby server on a different node instance we can't just store it in a global variable here.
         // We don't want others to be able to see and use the token so we crypt it
-        var tokencrypt = crypto.createCipher('aes-256-cfb', 'SOME RANDOM KEY HERE');
-        var token      = tokencrypt.update(facebook.oauth_token, 'ascii', 'base64')+tokencrypt.final('base64');
+        var tokencrypt = crypto.createCipher('des-ecb', 'SOME RANDOM KEY HERE');
+
+        // base64 encoding should be smaller but old nodejs versions bug with this (see https://github.com/joyent/node/commit/e357acc55b8126e1b8b78edcf4ac09dfa3217146)
+        var token = tokencrypt.update(facebook.oauth_token, 'ascii', 'hex')+tokencrypt.final('hex');
 
         res.write('<script>var nfe = {facebookid: '+facebook.user_id+', facebooktoken : "'+token+'"};</script>');
 

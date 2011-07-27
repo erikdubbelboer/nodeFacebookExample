@@ -32,8 +32,8 @@ exports.start = function(server) {
         case 'connect': {
           // Decrypt the facebook user token.
           // Make sure to use the exact same key as in index.js!
-          var tokencrypt = crypto.createDecipher('aes-256-cfb', 'SOME RANDOM KEY HERE');
-          var token      = tokencrypt.update(data.token, 'base64', 'ascii')+tokencrypt.final('ascii');
+          var tokencrypt = crypto.createDecipher('des-ecb', 'SOME RANDOM KEY HERE');
+          var token      = tokencrypt.update(data.token, 'hex', 'ascii')+tokencrypt.final('ascii');
 
           // Send a newuser message for all existing users to the just connected user.
           for (id in users) {
