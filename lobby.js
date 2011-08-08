@@ -64,6 +64,18 @@ exports.start = function(server) {
               'id'  : userid,
               'name': name
             }));
+
+            for (var uid in users) {
+              if (uid == userid) {
+                continue;
+              }
+
+              client.json.send({
+                'type': 'newuser',
+                'id'  : uid,
+                'name': users[uid].name
+              });
+            }
           });
 
           break;

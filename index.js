@@ -28,8 +28,15 @@ function parse_post(req, callback) {
 
 // Uncomment this to catch all exceptions so the server doesn't crash.
 //process.on('uncaughtException', function (err) {
-//  console.log('uncaught exception: ' + err);
+//  console.log(err.stack);
 //});
+
+
+
+// Make sure we are in the correct working directory, otherwise fs.readFile('header.html' will fail.
+if (process.cwd() != __dirname) {
+  process.chdir(__dirname);
+}
 
 
 
