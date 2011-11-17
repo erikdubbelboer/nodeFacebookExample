@@ -1,4 +1,5 @@
 var http        = require('http'),
+    https       = require('https'),
     fs          = require('fs'),
     querystring = require('querystring'),
     crypto      = require('crypto');
@@ -13,14 +14,15 @@ function base64_url_decode(data) {
 
 // Wait for and parse POST data
 function parse_post(req, callback) {
-  var data = '';
+  // Pushing things into an array and joining them in the end is faster then concatenating strings.
+  var data = [];
 
   req.addListener('data', function(chunk) {
-    data += chunk;
+    data.push(chunk);
   });
 
   req.addListener('end', function() {
-    callback(querystring.parse(data));
+    callback(querystring.parse(data.join('')));
   });
 }
 
@@ -48,8 +50,8 @@ var contentTypes = {
 var validFile = new RegExp('^\/[a-z]+\/[0-9a-z\-]*\.(js|css)$');
 
 
-
-var server = http.createServer(function(req, res) {
+    
+function handleRequest(req, res) {
   // Serve .js and .css files (files must be in a subdirectory so users can't access the javascript files for nodejs).
   if (validFile.test(req.url)) {
     // substr(1) to strip the leading /
@@ -132,17 +134,30 @@ var server = http.createServer(function(req, res) {
       });
     }
   });
-});
+}
 
 
-server.listen(8081);
+
+// For information on how to get these files see: https://tootallnate.net/setting-up-free-ssl-on-your-node-server
+// If you don't want https you can comment out the following 7 lines.
+var httpsOptions = {
+  'ca':   fs.readFileSync('../ssl/geotrust.pem'),
+  'key':  fs.readFileSync('../ssl/server.key'),
+  'cert': fs.readFileSync('../ssl/dubbelboer.com.crt')
+};
+var httpsServer = https.createServer(httpsOptions, handleRequest);
+    httpsServer.listen(8083);
+
+
+var httpServer  = http.createServer(handleRequest);
+    httpServer.listen(8081);
 
 
 // In this example we run the lobby server on the same node instance using the same port.
 // In theory we could also run this on a seperate node instance.
 var lobby = require('./lobby');
 
-lobby.start(server);
+lobby.start(httpServer);
 
 
 // Never let something run as root when it's not needed!
